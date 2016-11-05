@@ -1,0 +1,17 @@
+{
+	"name": "offworks/classgen",
+	"description": "A nice PHP classes generator",
+	"license": "MIT",
+	"keywords": ["PHP Class generator", "PHP", "Class", "Stub"],
+	"authors": [{
+		"name": "Ahmad Rahimie Ahmad Zailani",
+		"email": "newrehmi@gmail.com",
+		"role": "lead"
+		}],
+	"support": {
+		"issues": "https://github.com/offworks/classgen/issues"
+	},
+	"autoload": {
+        "psr-4": {"Classgen\\": "src"}
+    }
+}

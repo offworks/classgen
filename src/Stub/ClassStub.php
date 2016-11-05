@@ -1,0 +1,235 @@
+<?php
+namespace Classgen\Stub;
+
+class ClassStub extends Stub
+{
+    /** @var MethodStub[] $methods */
+    protected $methods = array();
+
+    /**
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * @var null|string
+     */
+    protected $parent;
+
+    /** @var PropertyStub[] */
+    protected $properties = array();
+
+    /**
+     * @var array
+     */
+    protected $interfaces = array();
+
+    /**
+     * @var bool
+     */
+    protected $isFinal = false;
+
+    /**
+     * @var bool
+     */
+    protected $isAbstract = false;
+
+    public function __construct($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * Get fully qualified class name
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getNamespace()
+    {
+        $names = explode('\\', $this->name);
+
+        if(count($names) == 1)
+            return null;
+
+        array_pop($names);
+
+        return implode('\\', $names);
+    }
+
+    public function getShortClassname()
+    {
+        $names = explode('\\', $this->name);
+
+        return array_pop($names);
+    }
+
+    public function extendsFrom($name)
+    {
+        $this->parent = $name;
+
+        return $this;
+    }
+
+    public function setAsAbstract($abstract = true)
+    {
+        $this->isAbstract = true;
+    }
+
+    public function implementInterfaces(array $interfaces)
+    {
+        $this->interfaces = $interfaces;
+    }
+
+    public function addProperty($name, $type = null)
+    {
+        $this->properties[] = $stub = new PropertyStub($name, $type);
+
+        return $stub;
+    }
+
+    public function addStaticProperty($name, $type = null)
+    {
+        $stub = $this->addProperty($name, $type);
+
+        $stub->setAsStatic();
+
+        return $stub;
+    }
+
+    /**
+     * Add method
+     * @return MethodStub
+     */
+    public function addMethod($name)
+    {
+        $this->methods[] = $stub = new MethodStub($name);
+
+        return $stub;
+    }
+
+    /**
+     * Add static method
+     * @param $name
+     * @return MethodStub
+     */
+    public function addStaticMethod($name)
+    {
+        $method = $this->addMethod($name);
+
+        $method->setAsStatic(true);
+
+        return $method;
+    }
+
+    /**
+     * @param bool $final
+     * @return $this;
+     */
+    public function setAsFinal($final = true)
+    {
+        $this->isFinal = $final;
+
+        return $this;
+    }
+
+    public function getNameStub()
+    {
+        $name = ($this->isFinal ? 'final ' : '') . 'class '.$this->getShortClassname();
+
+        if($this->parent)
+            $name .= ' extends '.$this->parent;
+
+        if($this->interfaces)
+            $name .= ' implements ' . implode(', ', $this->interfaces);
+
+        return $name;
+    }
+
+    public function getPhpDocStub()
+    {
+        $stub = parent::getPhpDocStub();
+
+        $stub->removeReturnType();
+
+        return $stub;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getNamespaceStub()
+    {
+        $namespace = $this->getNamespace();
+
+        if( ! $namespace )
+            return null;
+
+        return 'namespace ' . $namespace.';';
+    }
+
+    /**
+     * @return array
+     */
+    public function toLines()
+    {
+        $lines = array();
+
+        $lines[] = '<?php';
+
+        if($stub = $this->getNamespaceStub())
+            $lines[] = $stub;
+
+        $lines[] = '';
+
+        foreach($this->getPhpDocStub()->toLines() as $line)
+        {
+            $lines[] = $line;
+        }
+
+        $lines[] = $this->getNameStub();
+
+        $lines[] = '{';
+
+        // properties
+        foreach($this->properties as $index => $property)
+        {
+            $propertyLines = $property->getIndentedLines();
+
+            foreach($propertyLines as $line)
+                $lines[] = $line;
+
+            $lines[] = '';
+        }
+
+        // methods
+        foreach($this->methods as $index => $method)
+        {
+            $methodLines = $method->getIndentedLines();
+
+            foreach($methodLines as $line)
+                $lines[] = $line;
+
+            if($index != (count($this->methods) - 1))
+                $lines[] = '';
+        }
+
+        $lines[] = '}';
+
+        return $lines;
+    }
+
+    public function toString()
+    {
+        return implode("\n", $this->toLines());
+    }
+
+    public function __toString()
+    {
+        return $this->toString();
+    }
+}
+
