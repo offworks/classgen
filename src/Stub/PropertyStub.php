@@ -1,19 +1,31 @@
 <?php
 namespace Classgen\Stub;
 
-class PropertyStub extends Stub
+class PropertyStub extends DocumentableStub
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $accessibility = 'protected';
 
+    /**
+     * @var string
+     */
     protected $name;
 
-    /** @var null|string */
+    /**
+     * @var null|string
+     */
     protected $type;
 
+    /**
+     * @var null|string
+     */
     protected $description;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $isStatic = false;
 
     /**

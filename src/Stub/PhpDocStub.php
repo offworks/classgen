@@ -1,7 +1,7 @@
 <?php
 namespace Classgen\Stub;
 
-class PhpDocStub extends Stub
+class PhpDocStub extends DocumentableStub
 {
     protected $description;
 

@@ -1,9 +1,11 @@
 <?php
 namespace Classgen\Stub;
 
-class MethodStub extends Stub
+class MethodStub extends DocumentableStub
 {
     protected $code;
+
+    protected $codeStub;
 
     protected $name;
 
@@ -12,6 +14,8 @@ class MethodStub extends Stub
     protected $accessibility = 'public';
 
     protected $isStatic = false;
+
+    protected $parameters = array();
 
     public function __construct($name)
     {
@@ -22,7 +26,47 @@ class MethodStub extends Stub
     {
         $this->code = $code;
 
+        $this->codeStub = CodeStub::createFromClosure($code);
+
+        $this->setParametersFromClosure($code);
+
         return $this;
+    }
+
+    public function setParametersFromClosure(\Closure $code)
+    {
+        $params = array();
+
+        $function = new \ReflectionFunction($code);
+
+        foreach($function->getParameters() as $param)
+        {
+            $string = (string) $param;
+            $matches = array();
+
+            preg_match('/\[(.*?)\]/', $string, $matches);
+
+            $match = trim(strip_tags($matches[1]));
+
+            $p = array();
+
+            if(strpos($match, '$') === 0)
+            {
+                $p['name'] = $match;
+            }
+            else
+            {
+                list($type, $name) = explode(' ', $match, 2);
+
+                $p['type'] = $type;
+
+                $p['name'] = $name;
+            }
+
+            $params[] = $p;
+        }
+
+        $this->parameters = $params;
     }
 
     /**
@@ -86,71 +130,12 @@ class MethodStub extends Stub
      */
     public function getParameters()
     {
-        $params = array();
-        $code = $this->code ? : function(){};
-
-        $func = new \ReflectionFunction($code);
-
-        foreach($func->getParameters() as $param)
-        {
-            $string = (string) $param;
-            $matches = array();
-
-            preg_match('/\[(.*?)\]/', $string, $matches);
-
-            $match = trim(strip_tags($matches[1]));
-
-            $p = array();
-
-            if(strpos($match, '$') === 0)
-            {
-                $p['name'] = $match;
-            }
-            else
-            {
-                list($type, $name) = explode(' ', $match, 2);
-
-                $p['type'] = $type;
-
-                $p['name'] = $name;
-            }
-
-            $params[] = $p;
-        }
-
-        return $params;
+        return $this->parameters;
     }
 
-    /**
-     * @return array
-     */
-    public function getCodeLines()
+    public function getCodeStub()
     {
-        $code = $this->code ? : function(){};
-
-        $func = new \ReflectionFunction($code);
-
-        // credit : http://stackoverflow.com/questions/7026690/reconstruct-get-code-of-php-function
-        $filename = $func->getFileName();
-        $start_line = $func->getStartLine() - 1; // it's actually - 1, otherwise you wont get the function() block
-        $end_line = $func->getEndLine();
-        $length = $end_line - $start_line;
-
-        $source = file($filename);
-        $body = implode("", array_slice($source, $start_line, $length));
-
-        // credit : http://stackoverflow.com/questions/2034687/regex-get-string-value-between-two-characters
-        $matches = array();
-        $t = preg_match('/{(.*?)\}/s', $body, $matches);
-
-        $lines = explode("\t", trim($matches[1]));
-
-        $lines = array_map(function($value)
-        {
-            return trim($value);
-        }, $lines);
-
-        return $lines;
+        return $this->codeStub;
     }
 
     /**
@@ -188,7 +173,7 @@ class MethodStub extends Stub
 
         $stub[] = '{';
 
-        foreach($this->getCodeLines() as $line)
+        foreach($this->getCodeStub()->toLines() as $line)
             $stub[] = '    '.$line;
 
         $stub[] = '}';

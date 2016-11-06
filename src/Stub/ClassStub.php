@@ -1,7 +1,7 @@
 <?php
 namespace Classgen\Stub;
 
-class ClassStub extends Stub
+class ClassStub extends DocumentableStub
 {
     /** @var MethodStub[] $methods */
     protected $methods = array();
@@ -72,6 +72,16 @@ class ClassStub extends Stub
         $this->parent = $name;
 
         return $this;
+    }
+
+    /**
+     * Alias to extendsFrom
+     * @param $name
+     * @return ClassStub
+     */
+    public function inherits($name)
+    {
+        return $this->extendsFrom($name);
     }
 
     public function setAsAbstract($abstract = true)

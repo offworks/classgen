@@ -42,16 +42,18 @@ class Classgen
      *
      * @param string $path
      */
-    public function generate($path)
+    public function generatePsr4($path)
     {
         foreach($this->classes as $stub)
         {
             $filename = $stub->getShortClassname() . '.php';
 
-            $namespace = $stub->getNamespace();
+            $segments = explode('\\', $stub->getNamespace());
 
-            if($this->baseNamespace)
-                $namespace = trim(substr($namespace, strlen($this->baseNamespace)), '\\');
+            if(count($segments) > 1)
+                array_shift($segments);
+
+            $namespace = implode('\\', $segments);
 
             $dir = $path . '/' . str_replace('\\', '/', $namespace);
 
