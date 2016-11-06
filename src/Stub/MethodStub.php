@@ -202,6 +202,11 @@ class MethodStub extends DocumentableStub
      */
     public function toLines()
     {
-        return array_merge($this->getPhpDocStub()->toLines(), $this->getMethodLines());
+        $doc = $this->getPhpDocStub();
+
+        if($doc->isValid())
+            return array_merge($this->getPhpDocStub()->toLines(), $this->getMethodLines());
+
+        return $this->getMethodLines();
     }
 }

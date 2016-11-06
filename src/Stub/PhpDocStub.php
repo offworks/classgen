@@ -141,4 +141,14 @@ class PhpDocStub extends DocumentableStub
     {
         $this->returnType = false;
     }
+
+    public function isValid()
+    {
+        return $this->description
+        || $this->comments
+        || $this->tags
+        || $this->parameters
+        || $this->variables
+        || $this->returnType !== false;
+    }
 }
