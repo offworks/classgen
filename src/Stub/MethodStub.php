@@ -5,6 +5,9 @@ class MethodStub extends DocumentableStub
 {
     protected $code;
 
+    /**
+     * @var null|CodeStub
+     */
     protected $codeStub;
 
     protected $name;
@@ -20,15 +23,36 @@ class MethodStub extends DocumentableStub
     public function __construct($name)
     {
         $this->name = $name;
+
+        $this->codeStub = new CodeStub;
     }
 
-    public function setCode(\Closure $code)
+    public function setCode($arg)
     {
-        $this->code = $code;
+        $this->codeStub->append($arg);
 
-        $this->codeStub = CodeStub::createFromClosure($code);
+        if (is_object($arg) && $arg instanceof \Closure)
+            $this->setParametersFromClosure($arg);
 
-        $this->setParametersFromClosure($code);
+        return $this;
+    }
+
+    public function addParameter($name, $type = null, $default = 'lsLSMK02L', $defaultType = null)
+    {
+        $param = array(
+            'name' => $name,
+            'type' => $type
+        );
+
+        if($default !== 'lsLSMK02L')
+        {
+            $param['default'] = array(
+                'type' => $defaultType ? : gettype($default),
+                'value' => $default
+            );
+        }
+
+        $this->parameters[] = $param;
 
         return $this;
     }
@@ -39,9 +63,8 @@ class MethodStub extends DocumentableStub
 
         $function = new \ReflectionFunction($code);
 
-        foreach($function->getParameters() as $param)
-        {
-            $string = (string) $param;
+        foreach ($function->getParameters() as $param) {
+            $string = (string)$param;
             $matches = array();
 
             preg_match('/\[(.*?)\]/', $string, $matches);
@@ -52,16 +75,57 @@ class MethodStub extends DocumentableStub
 
             if(strpos($match, '$') === 0)
             {
-                $p['name'] = $match;
+                $name = substr($match, 1);
             }
             else
             {
                 list($type, $name) = explode(' ', $match, 2);
 
-                $p['type'] = $type;
+                if (strpos($name, '$') === 0)
+                    $name = substr($name, 1);
 
-                $p['name'] = $name;
+                $p['type'] = $type;
             }
+
+            @list($name) = explode(' = ', $name, 2);
+
+            $p['name'] = $name;
+
+            if($param->isOptional())
+            {
+                if($param->isDefaultValueConstant())
+                {
+                    $p['default'] = array(
+                        'type' => 'constant',
+                        'value' => $param->getDefaultValueConstantName());
+                }
+                else
+                {
+                    if(is_array($param->getDefaultValue()))
+                    {
+                        $p['default'] = array(
+                            'type' => 'array',
+                            'value' => $param->getDefaultValue()
+                        );
+                    }
+                    else if(is_null($param->getDefaultValue()))
+                    {
+                        $p['default'] = array(
+                            'type' => 'NULL',
+                            'value' => null
+                        );
+                    }
+                    else
+                    {
+                        $p['default'] = array(
+                            'type' => 'string',
+                            'value' => $param->getDefaultValue()
+                        );
+                    }
+                }
+            }
+
+
 
             $params[] = $p;
         }
@@ -94,16 +158,14 @@ class MethodStub extends DocumentableStub
 
     public function getReturnType()
     {
-        return $this->returnType ? : 'void';
+        return $this->returnType ?: 'void';
     }
 
     public function getPhpDocStub()
     {
-        $doc = new PhpDocStub;
+        $doc = parent::getPhpDocStub();
 
-        $doc->setDescription($this->description);
-
-        foreach($this->getParameters() as $param)
+        foreach ($this->getParameters() as $param)
         {
             list($name) = explode(' ', $param['name']);
 
@@ -133,9 +195,17 @@ class MethodStub extends DocumentableStub
         return $this->parameters;
     }
 
+    /**
+     * @return null|CodeStub
+     */
     public function getCodeStub()
     {
         return $this->codeStub;
+    }
+
+    protected static function normalizeExportedArray($string)
+    {
+        return implode('', explode("\n", $string));
     }
 
     /**
@@ -152,6 +222,30 @@ class MethodStub extends DocumentableStub
             $name = $param['name'];
 
             $name = str_replace('Array', 'array()', $name);
+
+            $name = '$' . $name;
+
+            if(isset($param['default']))
+            {
+                switch($param['default']['type'])
+                {
+                    case 'constant':
+                        $name = $name . ' = ' . $param['default']['value'];
+                    break;
+                    case 'array':
+                        $name = $name . ' = ' . static::normalizeExportedArray(var_export($param['default']['value'], true));
+                    break;
+                    case 'string':
+                        $name = $name . ' = ' . var_export($param['default']['value'], true);
+                    break;
+                    case 'integer':
+                        $name = $name . ' = ' . $param['default']['value'];
+                    break;
+                    case 'NULL':
+                        $name = $name . ' = null';
+                    break;
+                }
+            }
 
             if(isset($param['type']))
                 $params[] = '\\'.$param['type'] . ' ' . $name;
