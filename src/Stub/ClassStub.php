@@ -195,9 +195,14 @@ class ClassStub extends DocumentableStub
 
         $lines[] = '';
 
-        foreach($this->getPhpDocStub()->toLines() as $line)
+        $doc = $this->getPhpDocStub();
+
+        if($doc->isValid())
         {
-            $lines[] = $line;
+            foreach($doc->toLines() as $line)
+            {
+                $lines[] = $line;
+            }
         }
 
         $lines[] = $this->getNameStub();
