@@ -51,8 +51,6 @@ class BlockStub extends CodeStub
 
             if(is_object($line) && $line instanceof BlockStub)
             {
-                $newLines[] = '';
-
                 foreach($line->toIndentedLines($lvl + 1) as $line)
                     $newLines[] = $line;
             }

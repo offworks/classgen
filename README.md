@@ -50,7 +50,7 @@ class Blog
 ```
 ### Class's method manipulation
 #### Generate a code block stub from \Closure
-The stub will automatically generate the method's parameter, by the given arguments.
+The stub will automatically generate the method's parameter, by the \Closure parameters.
 ```
 // sample
 $class->addMethod('setAtPublished')
@@ -93,6 +93,37 @@ Generate a method stub something like this
 public function isPublished()
 {
     return $this->isPublished == true;
+}
+```
+
+#### More nested code block
+```
+$method = $class->addMethod('isPopular')->setReturnType('bool');
+
+$method->getCodeStub()->addBlock('if($this->likes > 1000)', function($block)
+{
+    $block->addBlock('if($this->comments->count > 100)', function($block)
+    {
+        $block->write('return true;');
+    });
+})->write('return false;');
+```
+Generate a method stub something like this :
+```
+/**
+ * @return bool
+ */
+public function isPopular()
+{
+    if($this->likes > 1000)
+    {
+        if($this->comments->count > 100)
+        {
+            return true;
+        }
+    }
+    
+    return false;
 }
 ```
 ## License
