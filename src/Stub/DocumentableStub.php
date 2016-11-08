@@ -63,6 +63,16 @@ class DocumentableStub extends Stub
     }
 
     /**
+     * Alias to addComment()
+     * @param $comment
+     * @return DocumentableStub
+     */
+    public function comment($comment)
+    {
+        return $this->addComment($comment);
+    }
+
+    /**
      * @param string $description
      * @return $this
      */

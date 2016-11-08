@@ -114,9 +114,9 @@ class ClassStub extends DocumentableStub
      * Add method
      * @return MethodStub
      */
-    public function addMethod($name)
+    public function addMethod($name, $arg = null)
     {
-        $this->methods[] = $stub = new MethodStub($name);
+        $this->methods[] = $stub = new MethodStub($name, $arg);
 
         return $stub;
     }

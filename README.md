@@ -10,6 +10,9 @@ $generator = new \Classgen\Classgen;
 #### Create a class
 ```
 $class = $generator->addClass('Acme\Models\Blog');
+
+$class->inherits('BaseModel');
+
 ```
 #### Add property
 ```
@@ -27,7 +30,7 @@ The codes above might generate a stub like this :
 <?php
 namespace Acme\Model;
 
-class Blog
+class Blog extends BaseModel
 {
     /**
      * @var bool
@@ -50,20 +53,20 @@ class Blog
 ```
 ### Class's method manipulation
 #### Generate a stub from \Closure
-The stub will automatically generate the method's parameter, by the \Closure parameters.
+Through the initialize($mixed) method, the stub will automatically generate the method's params, if \Closure is passed.
 ```
 // sample
 $method = $class->addMethod('setAtPublished');
 
-$method->addComment('Publish the article')
-   ->setReturnType('self')
-   ->setCode(function($published = true)
-   {
-       // mark this article as published
-       $this->setPublished($published ? 1 : 0);
-       
-       return $this;
-   });
+$method->comment('Publish the article')
+    ->returnAs('self')
+    ->initialize(function($published = true)
+    {
+        // mark this article as published
+        $this->setPublished($published ? 1 : 0);
+        
+        return $this;
+    });
 ```
 This code might generate a method stub something like this :
 ```
@@ -85,9 +88,9 @@ public function setAsPublished($published = true)
 ```
 $method = $class->addMethod('isPublished');
 
-$method->addComment('Check whether article is published')
-   ->setReturnType('bool')
-   ->setCode('return $this->isPublished == true;');
+$method->comment('Check whether article is published')
+   ->returnAs('bool')
+   ->initialize('return $this->isPublished == true;');
 ```
 Generate a method stub something like this :
 ```
@@ -103,7 +106,7 @@ public function isPublished()
 
 #### More nested code block
 ```
-$method = $class->addMethod('isPopular')->setReturnType('bool');
+$method = $class->addMethod('isPopular')->returnAs('bool');
 
 // code() method let you code within a safe handler. (enough with pollution)
 $method->code(function($code)

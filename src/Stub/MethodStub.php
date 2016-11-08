@@ -20,14 +20,17 @@ class MethodStub extends DocumentableStub
 
     protected $parameters = array();
 
-    public function __construct($name)
+    public function __construct($name, $arg = null)
     {
         $this->name = $name;
 
         $this->codeStub = new CodeStub;
+
+        if($arg)
+            $this->initialize($arg);
     }
 
-    public function setCode($arg)
+    public function initialize($arg)
     {
         $this->codeStub->append($arg);
 
@@ -55,6 +58,11 @@ class MethodStub extends DocumentableStub
         $this->parameters[] = $param;
 
         return $this;
+    }
+
+    public function param($name, $type = null, $default = 'lsLSMK02L', $defaultType = null)
+    {
+        return $this->addParameter($name, $type, $default, $defaultType);
     }
 
     public function setParametersFromClosure(\Closure $code)
@@ -142,6 +150,15 @@ class MethodStub extends DocumentableStub
         $this->returnType = $type;
 
         return $this;
+    }
+
+    /**
+     * @param $type
+     * @return MethodStub
+     */
+    public function returnAs($type)
+    {
+        return $this->setReturnType($type);
     }
 
     public function setAccessibility($accessibility)
