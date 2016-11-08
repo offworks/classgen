@@ -3,11 +3,11 @@ namespace Classgen\Stub;
 
 class CodeStub extends Stub
 {
-    protected $content;
+    protected $lines = array();
 
     public function __construct($content = '')
     {
-        $this->content = $content;
+        $this->lines = $content === '' ? array() : explode("\n", $content);
     }
 
     public static function createFromArgument($arg)
@@ -22,30 +22,45 @@ class CodeStub extends Stub
 
     public function replace($find, $replace)
     {
-        $this->content = str_replace($find, $replace, $this->content);
+        $this->lines = explode("\n", str_replace($find, $replace, implode("\n", $this->lines)));
 
         return $this;
     }
 
     public function filter(\Closure $closure)
     {
-        $this->content = $closure($this->content);
+        $this->lines = explode("\n", $closure(implode("\n", $this->lines)));
 
         return $this;
     }
 
+    public function each(\Closure $closure)
+    {
+        $lines = array();
+
+        foreach($this->lines as $line)
+            $lines[] = $closure($line);
+
+        $this->lines = $lines;
+    }
+
     public function prepend($arg)
     {
-        $this->content = implode("\n", static::createLinesFromArgument($arg)) . "\n\n" . $this->content;
+        $lines = static::createLinesFromArgument($arg);
+
+        $this->lines = array_merge($lines, array(''), $this->lines);
 
         return $this;
     }
 
     public function append($arg)
     {
-        $content = implode("\n", static::createLinesFromArgument($arg));
+        $lines = static::createLinesFromArgument($arg);
 
-        $this->content = ($this->content) ? $this->content . "\n\n" . $content : $content;
+        if(count($this->lines) == 0 && count($lines) == 1 && $lines[0] === '')
+            return $this;
+
+        $this->lines = $this->lines ? array_merge($this->lines, array(''), $lines) : $lines;
 
         return $this;
     }
@@ -105,6 +120,9 @@ class CodeStub extends Stub
 
     public function toLines()
     {
-        return explode("\n", $this->content);
+        if(count($this->lines) == 0)
+            return array('');
+
+        return $this->lines;
     }
 }
