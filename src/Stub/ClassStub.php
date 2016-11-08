@@ -207,7 +207,7 @@ class ClassStub extends DocumentableStub
         // properties
         foreach($this->properties as $index => $property)
         {
-            $propertyLines = $property->getIndentedLines();
+            $propertyLines = $property->toIndentedLines();
 
             foreach($propertyLines as $line)
                 $lines[] = $line;
@@ -218,7 +218,7 @@ class ClassStub extends DocumentableStub
         // methods
         foreach($this->methods as $index => $method)
         {
-            $methodLines = $method->getIndentedLines();
+            $methodLines = $method->toIndentedLines();
 
             foreach($methodLines as $line)
                 $lines[] = $line;

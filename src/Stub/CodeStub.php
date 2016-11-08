@@ -3,6 +3,7 @@ namespace Classgen\Stub;
 
 class CodeStub extends Stub
 {
+    /** @var array|BlockStub[]  */
     protected $lines = array();
 
     public function __construct($content = '')
@@ -44,6 +45,10 @@ class CodeStub extends Stub
         $this->lines = $lines;
     }
 
+    /**
+     * @param $arg
+     * @return CodeStub
+     */
     public function prepend($arg)
     {
         $lines = static::createLinesFromArgument($arg);
@@ -53,6 +58,10 @@ class CodeStub extends Stub
         return $this;
     }
 
+    /**
+     * @param $arg
+     * @return self
+     */
     public function append($arg)
     {
         $lines = static::createLinesFromArgument($arg);
@@ -61,6 +70,42 @@ class CodeStub extends Stub
             return $this;
 
         $this->lines = $this->lines ? array_merge($this->lines, array(''), $lines) : $lines;
+
+        return $this;
+    }
+
+    /**
+     * Alias to append($arg)
+     * @param mixed $arg
+     * @return CodeStub
+     */
+    public function write($arg)
+    {
+        return $this->append($arg);
+    }
+
+    public function addBlock($header, \Closure $handler = null)
+    {
+        $block = new BlockStub($header);
+
+        $this->lines[] = $block;
+
+        if($handler)
+            $handler($block);
+
+        return $this;
+    }
+
+    public function addContinuedBlock($header, \Closure $handler = null)
+    {
+        $block = new BlockStub($header);
+
+        $this->lines[] = $block;
+
+        if($handler)
+            $handler($block);
+
+        $block->setAsContinued();
 
         return $this;
     }
@@ -123,6 +168,25 @@ class CodeStub extends Stub
         if(count($this->lines) == 0)
             return array('');
 
-        return $this->lines;
+        // block stub checking.
+        $lines = array();
+
+        foreach($this->lines as $index => $line)
+        {
+            if(is_object($line) && $line instanceof BlockStub)
+            {
+                if(!$line->isContinued() && $index !== 0)
+                    $lines[] = '';
+
+                foreach($line->toIndentedLines(1) as $line)
+                    $lines[] = $line;
+            }
+            else
+            {
+                $lines[] = $line;
+            }
+        }
+
+        return $lines;
     }
 }

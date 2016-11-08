@@ -12,7 +12,7 @@ class Stub
      * @param int $level
      * @return array
      */
-    public function getIndentedLines($level = 1)
+    public function toIndentedLines($level = 1)
     {
         $newLines = array();
 
