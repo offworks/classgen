@@ -203,6 +203,26 @@ class MethodStub extends DocumentableStub
         return $this->codeStub;
     }
 
+    /**
+     * Alias to getCodeStub
+     * @return CodeStub|null
+     */
+    public function getCode()
+    {
+        return $this->getCodeStub();
+    }
+
+    /**
+     * @param \Closure $handler
+     * @return $this
+     */
+    public function code(\Closure $handler)
+    {
+        $handler($this->getCodeStub());
+
+        return $this;
+    }
+
     protected static function normalizeExportedArray($string)
     {
         return implode('', explode("\n", $string));

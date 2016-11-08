@@ -1,5 +1,5 @@
 # classgen
-A simple PHP class generator that helps developer with more dynamic PHP classes generation.
+A simple, dynamic and programmatically fluent PHP class generator.
 
 ## Usage
 ### Instantiate the generator service
@@ -49,18 +49,21 @@ class Blog
 }
 ```
 ### Class's method manipulation
-#### Generate a code block stub from \Closure
+#### Generate a stub from \Closure
 The stub will automatically generate the method's parameter, by the \Closure parameters.
 ```
 // sample
-$class->addMethod('setAtPublished')
-    ->addComment('Publish the article')
-    ->setReturnType('self')
-    ->setCode(function($published = true) {
-        $this->setPublished($published ? 1 : 0);
-        
-        return $this;
-    });
+$method = $class->addMethod('setAtPublished');
+
+$method->addComment('Publish the article')
+   ->setReturnType('self')
+   ->setCode(function($published = true)
+   {
+       // mark this article as published
+       $this->setPublished($published ? 1 : 0);
+       
+       return $this;
+   });
 ```
 This code might generate a method stub something like this :
 ```
@@ -72,19 +75,21 @@ This code might generate a method stub something like this :
  */
 public function setAsPublished($published = true)
 {
+    // mark this article as published
     $this->setPublished($published ? 1 : 0);
     
     return $this;
 }
 ```
-#### Generate a code block stub from string
+#### Generate the stub directly from string
 ```
-$class->addMethod('isPublished')
-    ->addComment('Check whether article is published')
-    ->setReturnType('bool')
-    ->setCode('return $this->isPublished == true;');
+$method = $class->addMethod('isPublished');
+
+$method->addComment('Check whether article is published')
+   ->setReturnType('bool')
+   ->setCode('return $this->isPublished == true;');
 ```
-Generate a method stub something like this
+Generate a method stub something like this :
 ```
 /**
  * Check whether article is published
@@ -100,13 +105,28 @@ public function isPublished()
 ```
 $method = $class->addMethod('isPopular')->setReturnType('bool');
 
-$method->getCodeStub()->addBlock('if($this->likes > 1000)', function($block)
+// code() method let you code within a safe handler. (enough with pollution)
+$method->code(function($code)
 {
-    $block->addBlock('if($this->comments->count > 100)', function($block)
+    $code->addBlock('if($this->likes > 1000)', function($code)
     {
-        $block->write('return true;');
+         $code->addBlock('if($this->comments->count > 100)', function($code)
+         {
+             $code->write('return true;');
+         });
     });
-})->write('return false;');
+    
+    // continued block will skip the line break
+    $code->addContinuedBlock('else if($this->isDeleted())', function($code)
+    {
+        $code->write(function()
+        {
+            throw new \Exception('The article has been deleted. Throw! throw!');
+        });
+    });
+    
+    $code->write('return false;');
+});
 ```
 Generate a method stub something like this :
 ```
@@ -122,9 +142,16 @@ public function isPopular()
             return true;
         }
     }
+    else if($this->isDeleted())
+    {
+        throw new \Exception('The article has been deleted. Throw! throw!');
+    }
     
     return false;
 }
 ```
 ## License
 See [MIT License](LICENSE.md)
+
+## Thank you!
+Hope you like it!

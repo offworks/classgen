@@ -1,6 +1,6 @@
 {
 	"name": "offworks/classgen",
-	"description": "A nice PHP classes generator",
+	"description": "A simple, dynamic and programmatically fluent PHP class generator.",
 	"license": "MIT",
 	"keywords": ["PHP Class generator", "PHP", "Class", "Stub"],
 	"authors": [{
