@@ -19,6 +19,12 @@ class PropertyStub extends DocumentableStub
     protected $type;
 
     /**
+     * If type is give through setValue
+     * @var string
+     */
+    protected $valueType = null;
+
+    /**
      * @var null|string
      */
     protected $description;
@@ -27,6 +33,9 @@ class PropertyStub extends DocumentableStub
      * @var bool
      */
     protected $isStatic = false;
+
+    /** @var string */
+    protected $value;
 
     /**
      * PropertyStub constructor.
@@ -41,24 +50,66 @@ class PropertyStub extends DocumentableStub
         $this->description = $description;
     }
 
-    public function setDefault($var)
+    /**
+     * Set property value
+     * @param $var
+     * @return $this
+     */
+    public function setValue($value, $isString = false)
     {
-        $this->default = var_export($var, true);
+        if($isString)
+            return $this->setValueByString($value);
+
+        $this->valueType = gettype($value);
+
+        if(is_array($value))
+            $value = static::normalizeExportedArray(var_export($value, true));
+        else
+            $value = var_export($value, true);
+
+        return $this->setValueByString($value);
     }
 
-    public function setDefaultByString($string)
+    /**
+     * Alias to setValue
+     * @param $value
+     * @return self
+     */
+    public function value($value, $isString = false)
     {
-        $this->default = $string;
+        return $this->setValue($value, $isString);
     }
 
+    /**
+     * @param $string
+     * @return self
+     */
+    public function setValueByString($string)
+    {
+        $this->value = $string;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
     public function getType()
     {
-        return $this->type;
+        if($this->type)
+            return $this->type;
+
+        if($this->valueType === null)
+            return null;
+
+        return $this->valueType;
     }
 
     public function setType($type)
     {
         $this->type = $type;
+
+        return $this;
     }
 
     /**
@@ -89,17 +140,21 @@ class PropertyStub extends DocumentableStub
 
         $doc->removeReturnType();
 
-        $doc->addVariable($this->name, $this->type);
+        $doc->addVariable($this->name, $this->getType());
 
         return $doc;
     }
 
     /**
-     * @param string $accessibility
+     * @param $accessibility
      * @return $this
+     * @throws \Exception
      */
     public function setAccessibility($accessibility)
     {
+        if( ! in_array($accessibility, array('protected', 'private', 'public')))
+            throw new \Exception('Accessibility may only be protected, private, or public');
+
         $this->accessibility = $accessibility;
 
         return $this;
@@ -107,10 +162,11 @@ class PropertyStub extends DocumentableStub
 
     public function toLines()
     {
-        $lines = array();
+        $line = $this->accessibility . ' ' . ($this->isStatic ? 'static ' : '') . '$' . $this->name;
 
-        $lines[] = $this->accessibility . ' ' . ($this->isStatic ? 'static ' : '') . '$' . $this->name;
+        if($this->value)
+            $line = $line . ' = ' . $this->value.';';
 
-        return array_merge($this->getPhpDocStub()->toLines(), $lines);
+        return array_merge($this->getPhpDocStub()->toLines(), array($line));
     }
 }

@@ -22,6 +22,13 @@ class Stub
         return $newLines;
     }
 
+    protected static function normalizeExportedArray($string)
+    {
+        $array = implode('', explode("\n", $string));
+
+        return str_replace(array('array (  ', ',)'), array('array(', ')'), $array);
+    }
+
     public function toString()
     {
         return implode("\n", $this->toLines());

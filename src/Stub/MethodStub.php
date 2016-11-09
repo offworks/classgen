@@ -240,11 +240,6 @@ class MethodStub extends DocumentableStub
         return $this;
     }
 
-    protected static function normalizeExportedArray($string)
-    {
-        return implode('', explode("\n", $string));
-    }
-
     /**
      * @return string
      */
