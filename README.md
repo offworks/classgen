@@ -25,7 +25,10 @@ $property = $class->addStaticProperty('timestamp', 'bool');
 $method = $class->addMethod('doNothing');
 ```
 
-The codes above might generate a stub like this :
+And it'll print the class on casting the object to string.
+```
+echo $class;
+```
 ```
 <?php
 namespace Acme\Model;
@@ -152,6 +155,17 @@ public function isPopular()
     
     return false;
 }
+```
+
+#### Generate by PSR-4 standards
+```
+$generator->generatePsr4('Acme\\', __DIR__.'/src');
+```
+It will generator a structure and file (since we have only one class) similar to this :
+```
+/src
+  /Model
+    Article.php
 ```
 ## License
 See [MIT License](LICENSE.md)
