@@ -1,6 +1,12 @@
 # classgen
 A simple, dynamic and programmatically fluent PHP class generator.
 
+## Installation
+Through composer
+```
+composer require offworks/classgen
+```
+
 ## Usage
 ### Instantiate the generator service
 ```
