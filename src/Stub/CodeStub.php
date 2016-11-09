@@ -28,6 +28,11 @@ class CodeStub extends Stub
         return $this;
     }
 
+    /**
+     * Filter by the given string to the closure
+     * @param \Closure $closure
+     * @return $this
+     */
     public function filter(\Closure $closure)
     {
         $this->lines = explode("\n", $closure(implode("\n", $this->lines)));
@@ -36,7 +41,8 @@ class CodeStub extends Stub
     }
 
     /**
-     * Loop every line
+     * Filter by looping each line
+     * The handler MUST return the same line, or the filtered one.
      * @param \Closure $closure
      */
     public function each(\Closure $handler)
