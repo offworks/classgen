@@ -35,12 +35,16 @@ class CodeStub extends Stub
         return $this;
     }
 
-    public function each(\Closure $closure)
+    /**
+     * Loop every line
+     * @param \Closure $closure
+     */
+    public function each(\Closure $handler)
     {
         $lines = array();
 
         foreach($this->lines as $line)
-            $lines[] = $closure($line);
+            $lines[] = $handler($line);
 
         $this->lines = $lines;
     }

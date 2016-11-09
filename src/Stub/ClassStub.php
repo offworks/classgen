@@ -112,11 +112,13 @@ class ClassStub extends DocumentableStub
 
     /**
      * Add method
+     * @param string $name
+     * @param null|mixed $code
      * @return MethodStub
      */
-    public function addMethod($name, $arg = null)
+    public function addMethod($name, $code = null)
     {
-        $this->methods[] = $stub = new MethodStub($name, $arg);
+        $this->methods[] = $stub = new MethodStub($name, $code);
 
         return $stub;
     }
@@ -124,11 +126,12 @@ class ClassStub extends DocumentableStub
     /**
      * Add static method
      * @param $name
+     * $param null|mixed $code
      * @return MethodStub
      */
-    public function addStaticMethod($name)
+    public function addStaticMethod($name, $code = null)
     {
-        $method = $this->addMethod($name);
+        $method = $this->addMethod($name, $code);
 
         $method->setAsStatic(true);
 

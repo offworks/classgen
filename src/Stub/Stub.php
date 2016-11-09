@@ -1,7 +1,7 @@
 <?php
 namespace Classgen\Stub;
 
-class Stub
+abstract class Stub
 {
     public function toLines()
     {

@@ -8,14 +8,10 @@ composer require offworks/classgen
 ```
 
 ## Usage
-### Instantiate the generator service
-```
-$generator = new \Classgen\Classgen;
-```
 ### Class creation manipulation
 #### Create a class
 ```
-$class = $generator->addClass('Acme\Models\Blog');
+$class new \Classgen\Stub\ClassStub('Acme\Models\Blog');
 
 $class->inherits('BaseModel');
 
@@ -163,16 +159,78 @@ public function isPopular()
 }
 ```
 
-#### Generate by PSR-4 standards
+## Saving the class to the desired path
+### file_put_contents
+Most straight forward way
 ```
-$generator->generatePsr4('Acme\\', __DIR__.'/src');
+file_put_contents(__DIR_.'/app/MyClass.php', $class->toString());
+```
+### With generator
+#### PSR-4 based generator
+```
+$generator = new \Classgen\Generator\Psr4('Acme\\', __DIR__.'/src');
+```
+The generator has it's own sort of Collection of classes. Adding a class is simply by passing class name (it'll create a new), or add existing instance.
+```
+$generator->addClass($class); //existing
+
+$class = $generator->addClass('Acme/Routes/AdminRoute');
+```
+And generate once you're done.
+```
+$generator->generate();
 ```
 It will generator a structure and file (since we have only one class) similar to this :
 ```
 /src
   /Model
     Article.php
+  /Routes
+    AdminRoute.php
 ```
+
+#### Flat based generator
+Generate classes in a single directory
+```
+$generator = new \Classgen\Generator\Flat(__DIR__.'/src/Payments');
+
+$generator->addClass('App\Payment\Paypal');
+$generator->addClass('App\Payment\Cash');
+$generator->addClass('App\Payment\Cc');
+```
+And generate
+```
+$generator->generate();
+```
+
+## API
+### \Classgen\Stub\ClassStub
+- inherits(string $parentClass) : self
+- implementInterfaces(array $interfaces) : self
+- addMethod(string $name, mixed $code) : \Classgen\Stub\MethodStub'
+- getName() : string
+- getNamespace() : string
+- getShortClassname() : string
+- addProperty(string $name, string $type = null) : \Classgen\Stub\PropertyStub
+- addStaticProperty(string $name, string $type = null) : Classgen\Stub\PropertyStub
+- addMethod(string $name, mixed $code = null) : \Classgen\Stub\MethodStub
+- addStaticMethod(string $name, mixed $code = null) : \Classgen\Stub\MethodStub
+
+### \Classgen\Stub\MethodStub
+- initialize(mixed $code) : self
+- returnAs(string $type) : self
+- setAccessibility(string $accessibility) : self
+- code(\Closure $handler) : self
+- getCode() : \Classgen\Stub\CodeStub
+
+### \Classgen\Stub\CodeStub
+- replace(string $find, string $replace) : self
+- filter(\Closure $handler) : self
+- write(string|\Closure $code) : self
+- prepend(string|\Closure $code) : self
+- addBlock($header, \Closure $handler = null) : \Classgen\Stub\BlockStub
+- addContinuedBlock($header, \Closure $handler = null) : \Classgen\Stub\Blockstub
+
 ## License
 See [MIT License](LICENSE.md)
 
