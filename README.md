@@ -11,10 +11,9 @@ composer require offworks/classgen
 ### Class creation manipulation
 #### Create a class
 ```
-$class new \Classgen\Stub\ClassStub('Acme\Models\Blog');
+$class = new \Classgen\Stub\ClassStub('Acme\Models\Blog');
 
 $class->inherits('BaseModel');
-
 ```
 #### Add property
 ```
