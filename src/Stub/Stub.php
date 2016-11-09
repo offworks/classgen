@@ -21,4 +21,14 @@ class Stub
 
         return $newLines;
     }
+
+    public function toString()
+    {
+        return implode("\n", $this->toLines());
+    }
+
+    public function __toString()
+    {
+        return $this->toString();
+    }
 }

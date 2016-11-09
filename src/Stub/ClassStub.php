@@ -236,15 +236,5 @@ class ClassStub extends DocumentableStub
 
         return $lines;
     }
-
-    public function toString()
-    {
-        return implode("\n", $this->toLines());
-    }
-
-    public function __toString()
-    {
-        return $this->toString();
-    }
 }
 

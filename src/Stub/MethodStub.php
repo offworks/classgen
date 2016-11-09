@@ -313,22 +313,6 @@ class MethodStub extends DocumentableStub
     }
 
     /**
-     * @return string
-     */
-    public function toString()
-    {
-        return implode("\n", $this->toLines());
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->toString();
-    }
-
-    /**
      * @return array
      */
     public function toLines()
