@@ -11,11 +11,6 @@ class Classgen
     protected $classes = array();
 
     /**
-     * @var string|null
-     */
-    protected $baseNamespace;
-
-    /**
      * Add class
      *
      * @param $name
@@ -24,17 +19,6 @@ class Classgen
     public function addClass($name)
     {
         return $this->classes[] = new ClassStub($name);
-    }
-
-    /**
-     * @param $namespace
-     * @return $this
-     */
-    public function setBaseNamespace($namespace)
-    {
-        $this->baseNamespace = $namespace;
-
-        return $this;
     }
 
     /**
