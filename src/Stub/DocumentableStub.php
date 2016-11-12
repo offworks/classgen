@@ -1,7 +1,7 @@
 <?php
 namespace Classgen\Stub;
 
-class DocumentableStub extends Stub
+abstract class DocumentableStub extends Stub
 {
     /**
      * @var PhpDocStub

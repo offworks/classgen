@@ -87,11 +87,20 @@ class ClassStub extends DocumentableStub
     public function setAsAbstract($abstract = true)
     {
         $this->isAbstract = true;
+
+        return $this;
     }
 
     public function implementInterfaces(array $interfaces)
     {
         $this->interfaces = $interfaces;
+
+        return $this;
+    }
+
+    public function interfaces(array $interfaces)
+    {
+        return $this->implementInterfaces($interfaces);
     }
 
     public function addProperty($name, $type = null)

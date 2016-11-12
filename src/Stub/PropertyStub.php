@@ -1,7 +1,7 @@
 <?php
 namespace Classgen\Stub;
 
-class PropertyStub extends DocumentableStub
+class PropertyStub extends MemberStub
 {
     /**
      * @var string
@@ -113,25 +113,6 @@ class PropertyStub extends DocumentableStub
     }
 
     /**
-     * @param bool $static
-     * @return $this
-     */
-    public function setAsStatic($static = true)
-    {
-        $this->isStatic = $static;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccessibility()
-    {
-        return $this->accessibility;
-    }
-
-    /**
      * @return PhpDocStub
      */
     public function getPhpDocStub()
@@ -145,30 +126,7 @@ class PropertyStub extends DocumentableStub
         return $doc;
     }
 
-    /**
-     * @param $accessibility
-     * @return $this
-     * @throws \Exception
-     */
-    public function setAccessibility($accessibility)
-    {
-        if( ! in_array($accessibility, array('protected', 'private', 'public')))
-            throw new \Exception('Accessibility may only be protected, private, or public');
 
-        $this->accessibility = $accessibility;
-
-        return $this;
-    }
-
-    /**
-     * Alias to setAccessibility()
-     * @param $accessibility
-     * @return PropertyStub
-     */
-    public function accessibility($accessibility)
-    {
-        return $this->setAccessibility($accessibility);
-    }
 
     public function toLines()
     {

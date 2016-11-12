@@ -1,12 +1,17 @@
 <?php
 namespace Classgen\Stub;
 
-class MethodStub extends DocumentableStub
+class MethodStub extends MemberStub
 {
     /**
      * @var null|CodeStub
      */
     protected $codeStub;
+
+    /**
+     * @var string
+     */
+    protected $accessibility = 'public';
 
     /**
      * @var string
@@ -17,16 +22,6 @@ class MethodStub extends DocumentableStub
      * @var string
      */
     protected $returnType;
-
-    /**
-     * @var string
-     */
-    protected $accessibility = 'public';
-
-    /**
-     * @var bool
-     */
-    protected $isStatic = false;
 
     /**
      * @var bool
@@ -177,25 +172,6 @@ class MethodStub extends DocumentableStub
     public function returnAs($type)
     {
         return $this->setReturnType($type);
-    }
-
-    public function setAccessibility($accessibility)
-    {
-        $this->accessibility = $accessibility;
-
-        return $this;
-    }
-
-    public function accessibility($accessibility)
-    {
-        return $this->setAccessibility($accessibility);
-    }
-
-    public function setAsStatic($static = true)
-    {
-        $this->isStatic = $static;
-
-        return $this;
     }
 
     public function setAsAbstract($abstract = true)
