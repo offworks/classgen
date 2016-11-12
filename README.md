@@ -205,7 +205,7 @@ $generator->generate();
 ## API
 ### \Classgen\Stub\ClassStub
 - inherits(string $parentClass) : self
-- implementInterfaces(array $interfaces) : self
+- interfaces(array $interfaces) : self
 - addMethod(string $name, mixed $initialCode) : \Classgen\Stub\MethodStub'
 - getName() : string
 - getNamespace() : string
@@ -223,7 +223,7 @@ $generator->generate();
 ### \Classgen\Stub\MethodStub
 - initialize(mixed $code) : self
 - returnAs(string $type) : self
-- visibility(string $accessibility) : self
+- visibility(string $visibility) : self
 - code(\Closure $handler) : self
 - getCode() : \Classgen\Stub\CodeStub
 - setAsStatic() : self
