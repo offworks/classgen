@@ -3,23 +3,39 @@ namespace Classgen\Stub;
 
 class MethodStub extends DocumentableStub
 {
-    protected $code;
-
     /**
      * @var null|CodeStub
      */
     protected $codeStub;
 
+    /**
+     * @var string
+     */
     protected $name;
 
+    /**
+     * @var string
+     */
     protected $returnType;
 
+    /**
+     * @var string
+     */
     protected $accessibility = 'public';
 
+    /**
+     * @var bool
+     */
     protected $isStatic = false;
 
+    /**
+     * @var bool
+     */
     protected $isAbstract = false;
 
+    /**
+     * @var array
+     */
     protected $parameters = array();
 
     public function __construct($name, $code = null)

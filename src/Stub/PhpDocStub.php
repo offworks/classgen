@@ -3,6 +3,9 @@ namespace Classgen\Stub;
 
 class PhpDocStub extends DocumentableStub
 {
+    /**
+     * @var string
+     */
     protected $description;
 
     /**
@@ -20,8 +23,14 @@ class PhpDocStub extends DocumentableStub
      */
     protected $variables = array();
 
+    /**
+     * @var string
+     */
     protected $returnType = 'void';
 
+    /**
+     * @var array
+     */
     protected $tags = array();
 
     public function setDescription($description)
@@ -31,6 +40,10 @@ class PhpDocStub extends DocumentableStub
         return $this;
     }
 
+    /**
+     * @param string $comment
+     * @return $this
+     */
     public function addComment($comment)
     {
         $this->comments[] = $comment;
@@ -38,14 +51,26 @@ class PhpDocStub extends DocumentableStub
         return $this;
     }
 
+    /**
+     * @param $name
+     * @param null|string $description
+     * @return $this
+     */
     public function addTag($name, $description = null)
     {
         $this->tags[] = array(
             'name' => $name,
             'description' => $description
         );
+
+        return $this;
     }
 
+    /**
+     * @param $name
+     * @param null $type
+     * @return $this
+     */
     public function addParameter($name, $type = null)
     {
         $param = array();
@@ -56,11 +81,14 @@ class PhpDocStub extends DocumentableStub
             $param['type'] = '\\' . ltrim($type, '\\');
 
         $this->parameters[] = $param;
+
+        return $this;
     }
 
     /**
      * @param $name
      * @param null|string $type
+     * @retur $this
      */
     public function addVariable($name, $type = null)
     {
@@ -72,6 +100,8 @@ class PhpDocStub extends DocumentableStub
             $var['type'] = $type;
 
         $this->variables[] = $var;
+
+        return $this;
     }
 
     /**
@@ -137,11 +167,19 @@ class PhpDocStub extends DocumentableStub
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function removeReturnType()
     {
         $this->returnType = false;
+
+        return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function isValid()
     {
         return $this->description
