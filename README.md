@@ -218,12 +218,12 @@ $generator->generate();
 ### \Classgen\Stub\PropertyStub
 - value(string $value, bool $asString = false) : self
 - setAsStatic(bool $static = true) : self
-- accesibility(string $string) : self
+- visibility(string $string) : self
 
 ### \Classgen\Stub\MethodStub
 - initialize(mixed $code) : self
 - returnAs(string $type) : self
-- accessibility(string $accessibility) : self
+- visibility(string $accessibility) : self
 - code(\Closure $handler) : self
 - getCode() : \Classgen\Stub\CodeStub
 - setAsStatic() : self

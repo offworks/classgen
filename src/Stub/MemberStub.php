@@ -6,7 +6,7 @@ abstract class MemberStub extends DocumentableStub
     /**
      * @var string
      */
-    protected $accessibility;
+    protected $visibility;
 
     /**
      * @var bool
@@ -27,33 +27,33 @@ abstract class MemberStub extends DocumentableStub
     /**
      * @return string
      */
-    public function getAccessibility()
+    public function getVisibility()
     {
-        return $this->accessibility;
+        return $this->visibility;
     }
 
     /**
-     * @param $accessibility
+     * @param $visibility
      * @return $this
      * @throws \Exception
      */
-    public function setAccessibility($accessibility)
+    public function setVisibility($visibility)
     {
-        if( ! in_array($accessibility, array('protected', 'private', 'public')))
+        if( ! in_array($visibility, array('protected', 'private', 'public')))
             throw new \Exception('Accessibility may only be protected, private, or public');
 
-        $this->accessibility = $accessibility;
+        $this->visibility = $visibility;
 
         return $this;
     }
 
     /**
      * Alias to setAccessibility()
-     * @param $accessibility
+     * @param $visibility
      * @return PropertyStub
      */
-    public function accessibility($accessibility)
+    public function visibility($visibility)
     {
-        return $this->setAccessibility($accessibility);
+        return $this->setVisibility($visibility);
     }
 }

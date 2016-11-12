@@ -11,7 +11,7 @@ class MethodStub extends MemberStub
     /**
      * @var string
      */
-    protected $accessibility = 'public';
+    protected $visibility = 'public';
 
     /**
      * @var string
@@ -303,7 +303,7 @@ class MethodStub extends MemberStub
     {
         $stub = array();
 
-        $line = $this->accessibility.' '.($this->isStatic ? 'static ' : '') . 'function '.$this->getNameStub();
+        $line = $this->visibility.' '.($this->isStatic ? 'static ' : '') . 'function '.$this->getNameStub();
 
         if(!$this->isAbstract)
         {

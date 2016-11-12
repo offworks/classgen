@@ -6,7 +6,7 @@ class PropertyStub extends MemberStub
     /**
      * @var string
      */
-    protected $accessibility = 'protected';
+    protected $visibility = 'protected';
 
     /**
      * @var string
@@ -130,7 +130,7 @@ class PropertyStub extends MemberStub
 
     public function toLines()
     {
-        $line = $this->accessibility . ' ' . ($this->isStatic ? 'static ' : '') . '$' . $this->name;
+        $line = $this->visibility . ' ' . ($this->isStatic ? 'static ' : '') . '$' . $this->name;
 
         if($this->value)
             $line = $line . ' = ' . $this->value.';';
