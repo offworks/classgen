@@ -221,13 +221,15 @@ $generator->generate();
 - setAccessibility(string $accessibility) : self
 - code(\Closure $handler) : self
 - getCode() : \Classgen\Stub\CodeStub
+- setAsStatic() : self
+- setAsAbstract() : self
 
 ### \Classgen\Stub\CodeStub
 - replace(string $find, string $replace) : self
 - filter(\Closure $handler) : self
 - write(string|\Closure $code) : self
-- each(\Closure $handler) : self
 - prepend(string|\Closure $code) : self
+- each(\Closure $handler) : self
 - addBlock($header, \Closure $handler = null) : \Classgen\Stub\BlockStub
 - addContinuedBlock($header, \Closure $handler = null) : \Classgen\Stub\Blockstub
 
