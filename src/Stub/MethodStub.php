@@ -18,6 +18,8 @@ class MethodStub extends DocumentableStub
 
     protected $isStatic = false;
 
+    protected $isAbstract = false;
+
     protected $parameters = array();
 
     public function __construct($name, $code = null)
@@ -175,6 +177,13 @@ class MethodStub extends DocumentableStub
         return $this;
     }
 
+    public function setAsAbstract($abstract = true)
+    {
+        $this->isAbstract = $abstract;
+
+        return $this;
+    }
+
     public function getReturnType()
     {
         return $this->returnType ?: 'void';
@@ -297,14 +306,23 @@ class MethodStub extends DocumentableStub
     {
         $stub = array();
 
-        $stub[] = $this->accessibility.' '.($this->isStatic ? 'static ' : '') . 'function '.$this->getNameStub();
+        $line = $this->accessibility.' '.($this->isStatic ? 'static ' : '') . 'function '.$this->getNameStub();
 
-        $stub[] = '{';
+        if(!$this->isAbstract)
+        {
+            $stub[] = $line;
 
-        foreach($this->getCodeStub()->toLines() as $line)
-            $stub[] = '    '.$line;
+            $stub[] = '{';
 
-        $stub[] = '}';
+            foreach($this->getCodeStub()->toLines() as $line)
+                $stub[] = '    '.$line;
+
+            $stub[] = '}';
+        }
+        else
+        {
+            $stub[] = ($this->isAbstract ? 'abstract ': '') . $line . ';';
+        }
 
         return $stub;
     }
