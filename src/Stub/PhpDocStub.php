@@ -88,7 +88,7 @@ class PhpDocStub extends DocumentableStub
     /**
      * @param $name
      * @param null|string $type
-     * @retur $this
+     * @return $this
      */
     public function addVariable($name, $type = null)
     {
