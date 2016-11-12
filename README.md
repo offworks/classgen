@@ -206,7 +206,7 @@ $generator->generate();
 ### \Classgen\Stub\ClassStub
 - inherits(string $parentClass) : self
 - implementInterfaces(array $interfaces) : self
-- addMethod(string $name, mixed $code) : \Classgen\Stub\MethodStub'
+- addMethod(string $name, mixed $initialCode) : \Classgen\Stub\MethodStub'
 - getName() : string
 - getNamespace() : string
 - getShortClassname() : string
@@ -215,10 +215,15 @@ $generator->generate();
 - addMethod(string $name, mixed $code = null) : \Classgen\Stub\MethodStub
 - addStaticMethod(string $name, mixed $code = null) : \Classgen\Stub\MethodStub
 
+### \Classgen\Stub\PropertyStub
+- value(string $value, bool $asString = false) : self
+- setAsStatic(bool $static = true) : self
+- accesibility(string $string) : self
+
 ### \Classgen\Stub\MethodStub
 - initialize(mixed $code) : self
 - returnAs(string $type) : self
-- setAccessibility(string $accessibility) : self
+- accessibility(string $accessibility) : self
 - code(\Closure $handler) : self
 - getCode() : \Classgen\Stub\CodeStub
 - setAsStatic() : self

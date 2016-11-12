@@ -55,9 +55,9 @@ class PropertyStub extends DocumentableStub
      * @param $var
      * @return $this
      */
-    public function setValue($value, $isString = false)
+    public function setValue($value, $asString = false)
     {
-        if($isString)
+        if($asString)
             return $this->setValueByString($value);
 
         $this->valueType = gettype($value);
@@ -75,9 +75,9 @@ class PropertyStub extends DocumentableStub
      * @param $value
      * @return self
      */
-    public function value($value, $isString = false)
+    public function value($value, $asString = false)
     {
-        return $this->setValue($value, $isString);
+        return $this->setValue($value, $asString);
     }
 
     /**
@@ -158,6 +158,16 @@ class PropertyStub extends DocumentableStub
         $this->accessibility = $accessibility;
 
         return $this;
+    }
+
+    /**
+     * Alias to setAccessibility()
+     * @param $accessibility
+     * @return PropertyStub
+     */
+    public function accessibility($accessibility)
+    {
+        return $this->setAccessibility($accessibility);
     }
 
     public function toLines()

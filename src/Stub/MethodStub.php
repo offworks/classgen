@@ -38,22 +38,22 @@ class MethodStub extends DocumentableStub
      */
     protected $parameters = array();
 
-    public function __construct($name, $code = null)
+    public function __construct($name, $initialCode = null)
     {
         $this->name = $name;
 
         $this->codeStub = new CodeStub;
 
-        if($code)
-            $this->initialize($code);
+        if($initialCode)
+            $this->initialize($initialCode);
     }
 
-    public function initialize($code)
+    public function initialize($initialCode)
     {
-        $this->codeStub->append($code);
+        $this->codeStub->append($initialCode);
 
-        if (is_object($code) && $code instanceof \Closure)
-            $this->setParametersFromClosure($code);
+        if (is_object($initialCode) && $initialCode instanceof \Closure)
+            $this->setParametersFromClosure($initialCode);
 
         return $this;
     }
@@ -184,6 +184,11 @@ class MethodStub extends DocumentableStub
         $this->accessibility = $accessibility;
 
         return $this;
+    }
+
+    public function accessibility($accessibility)
+    {
+        return $this->setAccessibility($accessibility);
     }
 
     public function setAsStatic($static = true)
